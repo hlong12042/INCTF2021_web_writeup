@@ -5,7 +5,7 @@
 ``` file://web.challenge.bi0s.in:6969/code/app.py ```
 
 - Yêu cầu là set '_isAdmin' thành "yes", chuỗi '_isAdmin' sẽ được nối vào sau uid của người dùng => key có dạng uid+'_isAdmin', value='false'
-- Ngoài ra ta được một gợi ý là sử dụng 'inctf://redis:6379/_get', thử đổi get thành set, payload:
+- Gợi ý là sử dụng 'inctf://redis:6379/_get', thử đổi get thành set, payload:
 ``` inctf://redis:6379/_set {uid}_isAdmin yes ```
 ---
 ## Vuln Drive
@@ -109,7 +109,8 @@ while 1:
       break
 ```
 - Vì bị giới hạn độ dài nên tên file sẽ không được in ra hết (27 kí tự). Thêm 1 phần nhỏ sau chuỗi ra nhận được để lấy tiếp phần tiếp theo của file
-- LFI file đó => flag: ```inctf{y0u_pr0v3d_th4t_1t_i5_n0t_53cur3_7765626861636b6572}```
+- LFI file đó => flag
+![image](https://user-images.githubusercontent.com/58381595/129514986-0c4b8f5a-fb7c-4008-9e86-19b84005a1d9.png)
 ---
 ## Json Analyser
 1. Lấy mã PIN:
@@ -233,5 +234,5 @@ def verify_roles():
 - Sử dụng dependencies vì code sử dụng ```JSON.stringify(config['dependencies'])``` để phân tích các json con bên trong
 - "__proto__" để excute code
 - "defaultFilter":"e'));" dự vào CVE-2021-32819 để thực thi code bên phải dấu ;
-- Phần code sao là reverse shell về ngrok, ngoài ra có thể curl hoặc các cách khác để rce
-- ![image](https://user-images.githubusercontent.com/58381595/129514687-6e8c170f-8811-494d-881e-da6be4171220.png)
+- Phần code sau là reverse shell về ngrok, ngoài ra có thể curl hoặc các cách khác để rce
+![image](https://user-images.githubusercontent.com/58381595/129514687-6e8c170f-8811-494d-881e-da6be4171220.png)
