@@ -78,7 +78,7 @@ else
 - Vì part1 sử dụng urldecode, nên ta có thể bypass replace bằng double url encode ```$inp=urldecode($inp);```, ```%25```-> ```%``` 
 - => ```urldecode(%2527)``` -> bypass preg_match
 - Từ comment query1 -> phải tìm path trong adminfo db
-- inject vào query 3 theo thứ tự path,name và sử dụng like 0x25{}25 để bypass preg_match part2
+- inject vào query 3 theo thứ tự path,name và sử dụng like 0x{}25 để bypass preg_match part2
 - Payload:
 ```http://192.168.96.2/part1=0x252527&part2=path,name FROM adminfo WHERE path like 0x25{}25 UNION SELETE 1```
 - Vì bị giới hạn độ dài nên tên file sẽ không được in ra hết (27 kí tự). Do đó để lấy 5 ký tự cuối, ta dùng path like 0x25{nửa_payload_cuối}25
